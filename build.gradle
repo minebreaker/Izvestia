@@ -3,9 +3,13 @@ buildscript {
 
     repositories {
         mavenCentral()
+        jcenter()
     }
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
+        classpath(
+                "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version",
+                'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        )
     }
 }
 
@@ -14,6 +18,9 @@ plugins {
 }
 
 apply plugin: 'kotlin'
+apply plugin: 'jacoco'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'maven-publish'
 
 group 'rip.deadcode'
 version '0.1-SNAPSHOT'
@@ -47,16 +54,51 @@ dependencies {
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
 }
 
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives jar
+    archives sourcesJar
+    archives javadocJar
+}
+
 test {
     useJUnitPlatform()
 }
 
-sourceCompatibility = 1.8
-
-repositories {
-    mavenCentral()
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
 }
 
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+bintray {
+    user = project.hasProperty('BINTRAY_USER') ? BINTRAY_USER : ''
+    key = project.hasProperty('BINTRAY_KEY') ? BINTRAY_KEY : ''
+    pkg {
+        repo = 'test'
+        name = 'izvestia'
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/minebreaker-tf/Izvestia.git'
+    }
+    publications = ['bintrayPublication']
+}
+
+publishing {
+    publications {
+        bintrayPublication(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
 }

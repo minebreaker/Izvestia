@@ -36,7 +36,7 @@ public final class Expects {
      *
      * {@code
      * class Test {
-     *     @Test
+     *     {@literal @}Test
      *     void test() {
      *         expect(() -> {
      *             throw new IllegalStateException("Failure!");

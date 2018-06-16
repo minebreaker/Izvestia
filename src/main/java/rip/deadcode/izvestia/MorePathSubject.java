@@ -13,6 +13,10 @@ import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.Objects;
 
+import static com.google.common.truth.Fact.fact;
+import static com.google.common.truth.Fact.simpleFact;
+import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
+
 
 /**
  * Assertions for {@link Path} instances.
@@ -32,29 +36,40 @@ public final class MorePathSubject extends Subject<MorePathSubject, Path> {
      */
     public void isSameFile( @Nullable Path other ) throws UncheckedIOException {
         if ( actual() == null || other == null ) {
-            failWithRawMessage( "Not true that %s is same file as <%s>", actualAsString(), other );
+            failWithoutActual( fact( "expected non null paths", actualAsString() ) );
         } else {
             try {
-                boolean result = Files.isSameFile( actual(), other );
+                if ( !Files.isSameFile( actual(), other ) ) {
+                    failWithActual(
+                            fact( "expected a path that is equal to", other )
+                    );
+                }
             } catch ( IOException e ) {
-                throw new UncheckedIOException( e );
+                failWithActual( fact( "IO failure occurred during the assertion", e ) );
             }
         }
     }
 
+    /**
+     * Asserts that both paths are logically same.
+     * While {@link Files#isSameFile(Path, Path)} may access to the actual files,
+     * this only compares the path.
+     * Does not care {@link java.nio.file.FileSystem} of the paths.
+     *
+     * @param other Other
+     */
     public void pointsSamePath( @Nullable Path other ) {
         isNotNull();
         if ( other == null ) {
-            failWithRawMessage( "Not true that %s has same path as %s", actualAsString(), other );
+            failWithActual( simpleFact( "expected non null paths" ) );
         }
-
 
         Path normalizedActual = actual().toAbsolutePath().normalize();
         //noinspection ConstantConditions
         Path normalizedExpected = other.toAbsolutePath().normalize();
 
         if ( normalizedActual.getNameCount() != normalizedExpected.getNameCount() ) {
-            failWithRawMessage( "Not true that %s is same path as %s", actualAsString(), other );
+            failWithActual( fact( "expected a path that is same as", other ) );
         }
 
         Iterator<Path> iA = normalizedActual.iterator();
@@ -64,16 +79,21 @@ public final class MorePathSubject extends Subject<MorePathSubject, Path> {
             Path a = iA.next();
             Path e = iE.next();
             if ( !Objects.equals( a, e ) ) {
-                failWithRawMessage( "Not true that %s is same path as %s", actualAsString(), other );
+                failWithActual( fact( "expected a path that is same as", other ) );
             }
         }
     }
 
+    /**
+     * Assert the name oh the file. File has not to exist.
+     *
+     * @return StringSubject of the file name.
+     */
     public StringSubject hasFileNameThat() {
         isNotNull();
         Path nameElement = actual().getFileName();
         if ( nameElement == null ) {
-            failWithRawMessage( "This instance has no name element." );
+            failWithoutActual( simpleFact( "This instance has no name element." ) );
         }
 
         //noinspection ConstantConditions
@@ -83,42 +103,73 @@ public final class MorePathSubject extends Subject<MorePathSubject, Path> {
     public void isAbsolute() {
         isNotNull();
         if ( !actual().isAbsolute() ) {
-            failWithRawMessage( "Not true that %s is absolute.", actualAsString() );
+            failWithActual( simpleFact( "expected to be absolute" ) );
         }
     }
 
     public void isRelative() {
         isNotNull();
         if ( actual().isAbsolute() ) {
-            failWithRawMessage( "Not true that %s is relative.", actualAsString() );
+            failWithActual( simpleFact( "expected to be relative" ) );
+        }
+    }
+
+    static enum FileType {
+        FILE, DIRECTORY, SYMBOLIC_LINK {
+            @Override
+            public String toString() {
+                return "symbolic link";
+            }
+        }, UNKNOWN;
+
+        @Override
+        public String toString() {
+            return this.name().toLowerCase();
+        }
+    }
+
+    private static FileType inferType( Path path ) {
+        if ( Files.isRegularFile( path, NOFOLLOW_LINKS ) ) {
+            return FileType.FILE;
+        } else if ( Files.isDirectory( path, NOFOLLOW_LINKS ) ) {
+            return FileType.DIRECTORY;
+        } else if ( Files.isSymbolicLink( path ) ) {
+            return FileType.SYMBOLIC_LINK;
+        } else {
+            return FileType.UNKNOWN;
+        }
+    }
+
+    private void assertType( Path path, FileType expected ) {
+        isNotNull();
+        FileType actualType = inferType( path );
+        if ( !actualType.equals( expected ) ) {
+            failWithoutActual(
+                    fact( "expected to be", expected ),
+                    fact( "but was", actualType ),
+                    fact( "actual path", actual() )
+            );
         }
     }
 
     public void isFile() {
-        isNotNull();
-        if ( !Files.isRegularFile( actual() ) ) {
-            failWithRawMessage( "Not true that %s is a file.", actualAsString() );
-        }
+        assertType( actual(), FileType.FILE );
     }
 
     public void isDirectory() {
-        isNotNull();
-        if ( !Files.isDirectory( actual() ) ) {
-            failWithRawMessage( "Not true that %s is a directory.", actualAsString() );
-        }
+        assertType( actual(), FileType.DIRECTORY );
     }
 
     public void isSymbolicLink() {
-        isNotNull();
-        if ( !Files.isSymbolicLink( actual() ) ) {
-            failWithRawMessage( "Not true that %s is a symbolic link.", actualAsString() );
-        }
+        assertType( actual(), FileType.SYMBOLIC_LINK );
     }
 
     public void exists() {
         isNotNull();
-        if ( !Files.exists( actual() ) ) {
-            failWithRawMessage( "Not true that the file %s exists.", actualAsString() );
+        if ( !Files.exists( actual(), NOFOLLOW_LINKS ) ) {
+            failWithoutActual(
+                    simpleFact( "expected to exist" ),
+                    fact( "actual path", actual() ) );
         }
     }
 

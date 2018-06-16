@@ -6,6 +6,8 @@ import static com.google.common.truth.Truth.assertThat;
 
 public final class Expects {
 
+    private Expects() {}
+
     public static final class ExpectAssertion {
 
         private Executable testing;

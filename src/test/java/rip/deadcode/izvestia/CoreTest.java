@@ -29,4 +29,22 @@ class CoreTest {
             assertThat( e ).hasMessageThat().isEqualTo( "Expected that exception is thrown, but did not." );
         }
     }
+
+    @Test
+    void test3() {
+
+        expect( () -> {
+            throw new IllegalStateException();
+        } ).throwsException( IllegalStateException.class );
+    }
+
+    @Test
+    void test4() {
+        try {
+            expect( () -> {} ).throwsException( IllegalStateException.class );
+            fail( "Should throw AssertionError." );
+        } catch ( AssertionError e ) {
+            assertThat( e ).hasMessageThat().isEqualTo( "Expected that exception is thrown, but did not." );
+        }
+    }
 }

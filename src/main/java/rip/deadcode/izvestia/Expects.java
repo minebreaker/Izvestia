@@ -2,6 +2,8 @@ package rip.deadcode.izvestia;
 
 import java.util.function.Consumer;
 
+import static com.google.common.truth.Truth.assertThat;
+
 public final class Expects {
 
     public static final class ExpectAssertion {
@@ -16,13 +18,30 @@ public final class Expects {
          * Used to assert the thrown exception.
          *
          * @param assertion Assertion function. You should assert the given exception is what is expected.
-         * @throws AssertionError If test code didn't throw an exception
+         * @throws AssertionError If test code didn't throw an exception.
          */
         public void throwsException( Consumer<Throwable> assertion ) {
             try {
                 testing.execute();
             } catch ( Throwable throwable ) {
                 assertion.accept( throwable );
+                return;
+            }
+
+            throw new AssertionError( "Expected that exception is thrown, but did not." );
+        }
+
+        /**
+         * Used to assert the thrown exception.
+         *
+         * @param t The class that is expected to be thrown.
+         * @throws AssertionError If test code didn't throw an exception.
+         */
+        public void throwsException( Class<? extends Throwable> t ) {
+            try {
+                testing.execute();
+            } catch ( Throwable throwable ) {
+                assertThat( throwable ).isInstanceOf( t );
                 return;
             }
 

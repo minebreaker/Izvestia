@@ -47,11 +47,11 @@ dependencies {
     testCompile(
             "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version",
 
-            'org.junit.jupiter:junit-jupiter-api:5.1.0',
+            'org.junit.jupiter:junit-jupiter-api:5.2.0',
             'org.mockito:mockito-core:2.18.3',
             'com.google.jimfs:jimfs:1.1'
     )
-    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {

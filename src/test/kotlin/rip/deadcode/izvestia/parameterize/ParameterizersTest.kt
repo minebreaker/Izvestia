@@ -2,9 +2,9 @@ package rip.deadcode.izvestia.parameterize
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
-import rip.deadcode.izvestia.parameterize.Parameterizers.args
-import rip.deadcode.izvestia.parameterize.Parameterizers.test
-import rip.deadcode.izvestia.parameterize.Parameterizers.testCase
+import rip.deadcode.izvestia.Core.args
+import rip.deadcode.izvestia.Core.test
+import rip.deadcode.izvestia.Core.testCase
 import rip.deadcode.izvestia.parameterize.TestCase.TestCase2
 import rip.deadcode.izvestia.parameterize.TestCase.TestCase3
 import rip.deadcode.izvestia.parameterize.TestCase.TestCase4

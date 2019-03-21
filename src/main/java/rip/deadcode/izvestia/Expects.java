@@ -13,7 +13,7 @@ public final class Expects {
 
     public static final class ExpectAssertion {
 
-        private Executable testing;
+        private final Executable testing;
 
         private ExpectAssertion( Executable testing ) {
             this.testing = testing;

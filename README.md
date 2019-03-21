@@ -1,10 +1,10 @@
 # Izvestia - tiny library for Java/Kotlin unit testing
 
-JUnit 5 assertion is not easy to use, so I wrote my own one.
-Use with Google's [Truth](http://google.github.io/truth/).
+JUnit 5 assertions are not easy to use, so I wrote my own one.
+Use this with Google's [Truth](http://google.github.io/truth/).
 
-[![CircleCI](https://circleci.com/gh/minebreaker-tf/Izvestia.svg?style=svg)](https://circleci.com/gh/minebreaker-tf/Izvestia)
-[![codecov](https://codecov.io/gh/minebreaker-tf/Izvestia/branch/master/graph/badge.svg)](https://codecov.io/gh/minebreaker-tf/Izvestia)
+[![CircleCI](https://circleci.com/gh/minebreaker/Izvestia.svg?style=svg)](https://circleci.com/gh/minebreaker/Izvestia)
+[![codecov](https://codecov.io/gh/minebreaker/Izvestia/branch/master/graph/badge.svg)](https://codecov.io/gh/minebreaker-tf/Izvestia)
 
 
 ## Usage

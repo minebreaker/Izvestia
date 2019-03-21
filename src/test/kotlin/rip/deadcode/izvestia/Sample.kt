@@ -1,8 +1,8 @@
 package rip.deadcode.izvestia
 
 import com.google.common.truth.Truth.assertThat
-import org.junit.Test
 import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 import rip.deadcode.izvestia.Core.expect
 
 

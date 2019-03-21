@@ -1,8 +1,11 @@
 package rip.deadcode.izvestia;
 
+import rip.deadcode.izvestia.functions.Executable;
+
 import java.util.function.Consumer;
 
 import static com.google.common.truth.Truth.assertThat;
+
 
 public final class Expects {
 

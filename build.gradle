@@ -28,13 +28,14 @@ dependencies {
     compile(
             'com.google.guava:guava:27.0.1-jre',
             'com.google.code.findbugs:jsr305:3.0.2',
+
+            'org.junit.jupiter:junit-jupiter-api:5.4.1',
             'com.google.truth:truth:0.43',
             'com.google.truth.extensions:truth-java8-extension:0.43',
     )
     testCompile(
-            "org.jetbrains.kotlin:kotlin-stdlib-jdk8",
+            'org.jetbrains.kotlin:kotlin-stdlib-jdk8',
 
-            'org.junit.jupiter:junit-jupiter-api:5.4.1',
             'org.mockito:mockito-core:2.25.1',
             'com.google.jimfs:jimfs:1.1'
     )

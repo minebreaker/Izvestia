@@ -1,6 +1,7 @@
 package rip.deadcode.izvestia;
 
 import com.google.common.truth.Truth;
+import rip.deadcode.izvestia.functions.Executable;
 
 import javax.annotation.Nullable;
 import java.nio.file.Path;

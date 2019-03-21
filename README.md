@@ -10,7 +10,7 @@ Use this with Google's [Truth](http://google.github.io/truth/).
 ## Usage
 
 ```java
-class Test {
+class TestClass {
     @Test
     void test() {
 
@@ -26,7 +26,7 @@ class Test {
 ```
 
 ```kotlin
-class Test {
+class TestClass {
     @Test
     fun test() {
 
@@ -39,6 +39,34 @@ class Test {
     }
 }
 ```
+
+
+## Parameterized test
+
+```kotlin
+class Test {
+    @TestFactory
+    fun testMethod() = test("test-name").parameterized(
+        testCase("foo", 1),
+        testCase("bar", 2)
+    ).run { arg1, arg2 ->
+        assertions()
+    }
+}
+```
+
+```kotlin
+class Test {
+    @TestFactory
+    fun testMethod() = test("test-name").parameterized(
+        args("foo", "bar"),
+        args(1, 2, 3)
+    ).run { arg1, arg2 ->
+        assertions()
+    }
+}
+```
+
 
 ## Joke
 

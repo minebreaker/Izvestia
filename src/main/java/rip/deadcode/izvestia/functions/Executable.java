@@ -1,4 +1,5 @@
-package rip.deadcode.izvestia;
+package rip.deadcode.izvestia.functions;
+
 
 /**
  * Code block that can be executed, like testing code.

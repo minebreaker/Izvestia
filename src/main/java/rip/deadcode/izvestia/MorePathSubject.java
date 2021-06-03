@@ -22,10 +22,13 @@ import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
  * Assertions for {@link Path} instances.
  * Replacement for {@link PathSubject}.
  */
-public final class MorePathSubject extends Subject<MorePathSubject, Path> {
+public final class MorePathSubject extends Subject {
+
+    private final Path actual;
 
     private MorePathSubject( FailureMetadata metadata, @Nullable Path actual ) {
         super( metadata, actual );
+        this.actual = actual;
     }
 
     /**
@@ -35,11 +38,11 @@ public final class MorePathSubject extends Subject<MorePathSubject, Path> {
      * @throws UncheckedIOException If IO failed.
      */
     public void isSameFile( @Nullable Path other ) throws UncheckedIOException {
-        if ( actual() == null || other == null ) {
-            failWithoutActual( fact( "expected non null paths", actualAsString() ) );
+        if ( actual == null || other == null ) {
+            failWithoutActual( fact( "expected non null paths", actual ) );
         } else {
             try {
-                if ( !Files.isSameFile( actual(), other ) ) {
+                if ( !Files.isSameFile( actual, other ) ) {
                     failWithActual(
                             fact( "expected a path that is equal to", other )
                     );
@@ -64,7 +67,7 @@ public final class MorePathSubject extends Subject<MorePathSubject, Path> {
             failWithActual( simpleFact( "expected non null paths" ) );
         }
 
-        Path normalizedActual = actual().toAbsolutePath().normalize();
+        Path normalizedActual = actual.toAbsolutePath().normalize();
         //noinspection ConstantConditions
         Path normalizedExpected = other.toAbsolutePath().normalize();
 
@@ -91,7 +94,7 @@ public final class MorePathSubject extends Subject<MorePathSubject, Path> {
      */
     public StringSubject hasFileNameThat() {
         isNotNull();
-        Path nameElement = actual().getFileName();
+        Path nameElement = actual.getFileName();
         if ( nameElement == null ) {
             failWithoutActual( simpleFact( "This instance has no name element." ) );
         }
@@ -102,14 +105,14 @@ public final class MorePathSubject extends Subject<MorePathSubject, Path> {
 
     public void isAbsolute() {
         isNotNull();
-        if ( !actual().isAbsolute() ) {
+        if ( !actual.isAbsolute() ) {
             failWithActual( simpleFact( "expected to be absolute" ) );
         }
     }
 
     public void isRelative() {
         isNotNull();
-        if ( actual().isAbsolute() ) {
+        if ( actual.isAbsolute() ) {
             failWithActual( simpleFact( "expected to be relative" ) );
         }
     }
@@ -147,29 +150,30 @@ public final class MorePathSubject extends Subject<MorePathSubject, Path> {
             failWithoutActual(
                     fact( "expected to be", expected ),
                     fact( "but was", actualType ),
-                    fact( "actual path", actual() )
+                    fact( "actual path", actual )
             );
         }
     }
 
     public void isFile() {
-        assertType( actual(), FileType.FILE );
+        assertType( actual, FileType.FILE );
     }
 
     public void isDirectory() {
-        assertType( actual(), FileType.DIRECTORY );
+        assertType( actual, FileType.DIRECTORY );
     }
 
     public void isSymbolicLink() {
-        assertType( actual(), FileType.SYMBOLIC_LINK );
+        assertType( actual, FileType.SYMBOLIC_LINK );
     }
 
     public void exists() {
         isNotNull();
-        if ( !Files.exists( actual(), NOFOLLOW_LINKS ) ) {
+        if ( !Files.exists( actual, NOFOLLOW_LINKS ) ) {
             failWithoutActual(
                     simpleFact( "expected to exist" ),
-                    fact( "actual path", actual() ) );
+                    fact( "actual path", actual )
+            );
         }
     }
 

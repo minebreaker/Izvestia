@@ -6,6 +6,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 import static rip.deadcode.izvestia.Core.expect;
 
+
 class CoreTest {
 
     @Test
@@ -16,7 +17,7 @@ class CoreTest {
         expect( () -> {
             throw expectedException;
         } ).throwsException( e -> {
-            assertThat( e ).isSameAs( expectedException );
+            assertThat( e ).isSameInstanceAs( expectedException );
         } );
     }
 

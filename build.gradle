@@ -1,21 +1,9 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath(
-                'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
-        )
-    }
-}
-
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.3.21'
+    id 'maven-publish'
 }
 
 apply plugin: 'jacoco'
-apply plugin: 'com.jfrog.bintray'
-apply plugin: 'maven-publish'
 
 group 'rip.deadcode'
 version '0.3'
@@ -43,12 +31,12 @@ dependencies {
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
+    archiveClassifier.set('sources')
     from sourceSets.main.allSource
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
+    archiveClassifier.set('javadoc')
     from javadoc.destinationDir
 }
 
@@ -75,21 +63,32 @@ jacocoTestReport {
     }
 }
 
-bintray {
-    user = project.hasProperty('BINTRAY_USER') ? BINTRAY_USER : ''
-    key = project.hasProperty('BINTRAY_KEY') ? BINTRAY_KEY : ''
-    pkg {
-        repo = 'test'
-        name = 'izvestia'
-        licenses = ['MIT']
-        vcsUrl = 'https://github.com/minebreaker/Izvestia.git'
-    }
-    publications = ['bintrayPublication']
-}
-
 publishing {
+    repositories {
+        maven {
+            name = 'github'
+            url = 'https://maven.pkg.github.com/minebreaker/Izvestia'
+            credentials {
+                username = project.hasProperty("GITHUB_USER") ? GITHUB_USER : ''
+                password = project.hasProperty("GITHUB_TOKEN") ? GITHUB_TOKEN : ''
+            }
+        }
+    }
+
     publications {
-        bintrayPublication(MavenPublication) {
+        maven(MavenPublication) {
+
+            version '0.3'
+
+            pom {
+                url = 'https://github.com/minebreaker/Izvestia'
+                licenses {
+                    license {
+                        name = 'MIT'
+                    }
+                }
+            }
+
             from components.java
             artifact sourcesJar
             artifact javadocJar
